@@ -26,10 +26,14 @@ Usage Guidelines:
 --  Create Dimension : gold.dim_customers
 --  =============================================================================
 
+--  =============================================================================
+--  Create Dimension : gold.dim_customers
+--  =============================================================================
+
 IF OBJECT_ID('gold.dim_customers', 'V') IS NOT NULL
   DROP VIEW gold.dim_customers;
 GO
-  
+
 CREATE VIEW gold.dim_customers AS 
 SELECT
 	ROW_NUMBER() OVER(ORDER BY cst_id) AS customerKey,	--Surrogate Key is generated (Choose either startdate or customer_id)
@@ -51,7 +55,7 @@ LEFT JOIN silver.erp_loc_a101 la
 on ci.cst_key = la.cid
 
 --  =============================================================================
---  Create Dimension : gold.dim_customers
+--  Create Dimension : gold.dim_products
 --  =============================================================================
 
 IF OBJECT_ID('gold.dim_products', 'V') IS NOT NULL
@@ -77,7 +81,7 @@ ON pi.cat_id = pcg.id
 WHERE prd_end_dt IS NULL	--Filter out all historical data as NULL represents the current end date
 
 --  =============================================================================
---  Create Dimension : gold.dim_customers
+--  Create Dimension : gold.fact_sales
 --  =============================================================================
 
 IF OBJECT_ID('gold.fact_sales', 'V') IS NOT NULL
@@ -100,5 +104,8 @@ LEFT JOIN gold.dim_products as dp
 ON sd.sls_prd_key = dp.product_number
 LEFT JOIN gold.dim_customers as dc
 ON sd.sls_cust_id = dc.customer_id
+
+
+
 
 
